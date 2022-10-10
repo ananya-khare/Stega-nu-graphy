@@ -1,8 +1,5 @@
 from flask import Flask,render_template,request,send_file
 from PIL import Image
-from steg import hide,unhide
-from text import encode as encode_text
-from text import decode as dcode
 from io import BytesIO
 app = Flask(__name__)
 
