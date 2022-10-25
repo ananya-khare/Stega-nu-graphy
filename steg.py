@@ -23,3 +23,18 @@ def hide(rgb_image,binary_data):
                 break
             pixels[x,y] = (r,g,b)       
     return rgb_image
+
+def unhide(rgb_image):
+    size = rgb_image.size
+    pixels = rgb_image.load()
+    enc = ""
+    for x in range(size[0]):
+        for y in range(size[1]):
+            temp = [enc[i:i+7] for i in range(0, len(enc), 7)]
+            if "0000000" in temp:
+                break
+            r,g,b = pixels[x,y]
+            enc+= list(format(r,'#010b')[2:])[-1]
+            enc+= list(format(g,'#010b')[2:])[-1]
+            enc+= list(format(b,'#010b')[2:])[-1]
+    return([enc[i:i+7] for i in range(0, len(enc), 7)])
