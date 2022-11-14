@@ -50,3 +50,33 @@ def index():
             subprocess.run(['steghide','embed','-ef',"../uploads/txt/"+id+".txt","-cf","../uploads/img/"+filename,"-sf",filename,"-p",password])
             return send_from_directory(OUTPUT,filename,as_attachment=True)
     return render_template('index.html')
+
+
+@app.route('/decode',methods=["GET","POST"])
+def decode():
+    if request.method == "POST":
+        if 'file' not in request.files:
+            return "No cover file"
+        file = request.files['file']
+        filename = file.filename
+        password = request.form['password']
+        id = str(uuid.uuid4())
+        os.chdir(EXTRACT)
+        os.mkdir(id)
+        temp_path = os.path.join(EXTRACT,id)
+        os.chdir(temp_path)
+        file.save(os.path.join(temp_path,filename))
+        subprocess.run(['steghide','extract','-sf',filename,"-p",password])
+        if glob.glob("*.txt") == []:
+            flash('Invalid Password')
+            return redirect(url_for('decode'))
+        return send_from_directory(temp_path,glob.glob("*.txt")[0],as_attachment=True)
+    return render_template('decode.html')
+        
+
+if __name__ == "__main__":
+    app.run(
+        debug=True,
+        host = "0.0.0.0",
+        port = 8000
+    )
