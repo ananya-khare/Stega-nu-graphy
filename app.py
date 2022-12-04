@@ -12,7 +12,7 @@ EXTRACT = os.path.join(UPLOAD_FOLDER,'temp')
 
 TEXTS = os.path.join(UPLOAD_FOLDER,'txt')
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
 app.secret_key = "asdasdiu3020"
