@@ -55,6 +55,7 @@ def index():
 @app.route('/decode',methods=["GET","POST"])
 def decode():
     if request.method == "POST":
+        file = request.files['file']
         if 'file' not in request.files:
             return "No cover file"
         if file.filename == "":
