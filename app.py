@@ -36,7 +36,7 @@ def index():
         password = request.form['password']
         if file.filename == "" or to_hide.filename == "":
             return redirect(url_for('index'))
-        if file and allowed_file(file.filename) and to_hide:
+        if True:
             ext = file.filename.split('.')[-1]
             id = str(uuid.uuid4())
             filename = id+"."+ext
@@ -55,12 +55,8 @@ def index():
 @app.route('/decode',methods=["GET","POST"])
 def decode():
     if request.method == "POST":
-        file = request.files['file']
         if 'file' not in request.files:
             return "No cover file"
-        if file.filename == "":
-            flash("No file uploaded")
-            return redirect(url_for('decode'))
         file = request.files['file']
         filename = file.filename
         password = request.form['password']
@@ -75,7 +71,28 @@ def decode():
             return redirect(url_for('decode'))
         return send_from_directory(os.getcwd(),new1,as_attachment=True)
     return render_template('decode.html')
-        
+
+
+@app.route("/info",methods=['POST','GET'])
+def info():
+    if request.method == "POST":
+        file = request.files['file']
+        password = request.form['password']
+        ext = file.filename.split('.')[-1]
+        id = str(uuid.uuid4())
+        filename = id+"."+ext
+        file.save(os.path.join(IMAGES,filename))
+        result = subprocess.run(['steghide','info',os.path.join(IMAGES,filename),'-p',password],capture_output=True, text=True)
+        temp = result.stdout
+        try:
+            temp = result.stdout.split("format:")[-1]
+        except:
+            pass
+        flash(temp)
+        return render_template('info.html')
+    return render_template('info.html')
+
+
 
 if __name__ == "__main__":
     app.run(
@@ -83,6 +100,3 @@ if __name__ == "__main__":
         host = "0.0.0.0",
         port = 8000
     )
-
-def commit():
-    pass
